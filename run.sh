@@ -12,18 +12,9 @@ function setPostgresPassword() {
     sudo -u postgres psql -c "ALTER USER renderer PASSWORD '${PGPASSWORD:-renderer}'"
 }
 
-if [ "$#" -ne 1 ]; then
-    echo "usage: <import|run>"
-    echo "commands:"
-    echo "    import: Set up the database and import /data.osm.pbf"
-    echo "    run: Runs Apache and renderd to serve tiles at /tile/{z}/{x}/{y}.png"
-    echo "environment variables:"
-    echo "    THREADS: defines number of threads used for importing / tile rendering"
-    echo "    UPDATES: consecutive updates (enabled/disabled)"
-    exit 1
-fi
 
-if [ "$1" = "import" ]; then
+
+
     # Initialize PostgreSQL
     createPostgresConfig
     service postgresql start
@@ -63,10 +54,7 @@ if [ "$1" = "import" ]; then
 
     service postgresql stop
 
-    exit 0
-fi
 
-if [ "$1" = "run" ]; then
     # Clean /tmp
     rm -rf /tmp/*
 
@@ -74,9 +62,9 @@ if [ "$1" = "run" ]; then
     chown postgres:postgres /var/lib/postgresql -R
 
     # Configure Apache CORS
-    if [ "$ALLOW_CORS" == "1" ]; then
-        echo "export APACHE_ARGUMENTS='-D ALLOW_CORS'" >> /etc/apache2/envvars
-    fi
+    #if [ "$ALLOW_CORS" == "1" ]; then
+    #    echo "export APACHE_ARGUMENTS='-D ALLOW_CORS'" >> /etc/apache2/envvars
+    #fi
 
     # Initialize PostgreSQL and Apache
     createPostgresConfig
@@ -88,16 +76,12 @@ if [ "$1" = "run" ]; then
     sed -i -E "s/num_threads=[0-9]+/num_threads=${THREADS:-4}/g" /usr/local/etc/renderd.conf
 
     # start cron job to trigger consecutive updates
-    if [ "$UPDATES" = "enabled" ]; then
-      /etc/init.d/cron start
-    fi
+    #if [ "$UPDATES" = "enabled" ]; then
+    #  /etc/init.d/cron start
+    #fi
 
     # Run
     sudo -u renderer renderd -f -c /usr/local/etc/renderd.conf
     service postgresql stop
 
     exit 0
-fi
-
-echo "invalid command"
-exit 1
