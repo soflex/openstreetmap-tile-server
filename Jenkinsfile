@@ -26,15 +26,7 @@ podTemplate(
 
         container('docker') {
             stage('Creando docker(s)') {
-                if (argumentosCompilacion.size() == 0) {
                 crearDockerImage(nuevaVersion)
-                } else {
-                argumentosCompilacion.each{
-                    sh ("mv \"dist_${it.nombre}\" dist")
-                    crearDockerImage(nuevaVersion, it.nombre)
-                    sh ("mv dist \"dist_${it.nombre}\"")
-                }
-                }
             }
         }
         
