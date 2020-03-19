@@ -11,8 +11,11 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install dependencies
 RUN echo "deb [ allow-insecure=yes ] http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" >> /etc/apt/sources.list.d/pgdg.list \
-  && apt-get update \
-  && apt-get install -y apt-transport-https ca-certificates \
+  && apt-get update
+
+RUN apt-get install -y npm nodejs
+
+RUN apt-get install -y apt-transport-https ca-certificates \
   && apt-get install -y --no-install-recommends --allow-unauthenticated \
   apache2 \
   apache2-dev \
@@ -49,8 +52,6 @@ RUN echo "deb [ allow-insecure=yes ] http://apt.postgresql.org/pub/repos/apt/ bi
   lua5.3 \
   make \
   mapnik-utils \
-  nodejs \
-  npm \
   postgis \
   postgresql-10 \
   postgresql-10-postgis-2.5 \
