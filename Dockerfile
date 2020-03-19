@@ -177,4 +177,6 @@ EXPOSE 80 5432
 
 COPY httpd-foreground /usr/local/bin/
 
+RUN chmod +x /usr/local/bin/httpd-foreground
+
 CMD ["httpd-foreground"]
