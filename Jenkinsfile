@@ -7,7 +7,7 @@ podTemplate(
 	label: nombrePod,
 	inheritFrom: 'default',
 	containers: [
-        containerTemplate(name: 'docker', image: dockerImage, command: 'cat', ttyEnabled: true)
+        containerTemplate(name: 'docker', image:'docker:18.05', command: 'cat', ttyEnabled: true)
     ],
 	volumes: [
 	hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
